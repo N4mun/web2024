@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work3 Quiz</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .card-header,
+        .card-footer {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .card-body {
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="myapp" class="container p-4"></div>
+    <script type="text/babel">
+        class App extends React.Component {
+            state = {
+                subjects: ["ความรู้รอบตัว", "ความรู้เกี่ยวกับประเทศไทย"],
+                selectedSubject: null,
+                qlist: [],
+                answers: {},
+                status: 0,
+                score: 0,
+                valid: false,
+            };
+
+            constructor() {
+                super();
+                this.title = <div><b>Work3 :</b> แบบทดสอบ ด้วย ReactJS</div>;
+                this.footer = <div>By 653380197-7 ณัฐภัทร ตรงวัฒนาวุฒิ<br />
+                    College of Computing, Khon Kaen University
+                </div>;
+            }
+
+            async loadQuestions(subject) {
+                const res = await fetch("quiz3.json");
+                const data = await res.json();
+                this.setState({
+                    selectedSubject: subject,
+                    qlist: data[subject],
+                    status: 1,
+                    answers: {},
+                    valid: false,
+                });
+            }
+
+            checkAnswer() {
+                const score = this.state.qlist.reduce((total, q, i) => {
+                    return total + (q.correctOption === parseInt(this.state.answers["q" + i]) ? 1 : 0);
+                }, 0);
+                this.setState({ status: 2, score });
+            }
+
+            validate() {
+                const valid = this.state.qlist.every((q, i) => this.state.answers["q" + i] !== undefined);
+                this.setState({ valid });
+            }
+
+            render() {
+                return (
+                    <div className="card">
+                        <div className="card-header text-center">{this.title}</div>
+                        <div className="card-body">
+                            {this.state.status === 0 && <SubjectMenu app={this} />}
+                            {this.state.status === 1 && <QList list={this.state.qlist} app={this} />}
+                            {this.state.status === 2 && <ShowScore app={this} />}
+                        </div>
+                        <div className="card-footer text-center">{this.footer}</div>
+                    </div>
+                );
+            }
+        }
+
+        function SubjectMenu({ app }) {
+            return (
+                <div>
+                    <h5 className="text-center mb-4">เลือกวิชาเพื่อเริ่มทำแบบทดสอบ</h5>
+                    <div className="text-center">
+                        {app.state.subjects.map((subject, index) => (
+                            <button
+                                key={index}
+                                className="btn btn-primary m-2"
+                                onClick={() => app.loadQuestions(subject)}
+                            >
+                                {subject}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function QList({ list, app }) {
+            return (
+                <div>
+                    {list.map((q, i) => (
+                        <QBlock key={i} q={q} i={i} app={app} />
+                    ))}
+                    <div className="text-center mt-3">
+                        {app.state.valid ? (
+                            <button className="btn btn-success" onClick={() => app.checkAnswer()}>
+                                ตรวจคำตอบ
+                            </button>
+                        ) : (
+                            <span className="text-danger">กรุณาตอบให้ครบ</span>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function QBlock({ i, q, app }) {
+            const handleChange = (event) => {
+                const name = event.target.name;
+                const value = event.target.value;
+                const answers = { ...app.state.answers, [name]: value };
+                app.setState({ answers }, () => app.validate());
+            };
+
+            return (
+                <div className="mb-3">
+                    <div className="mb-2"><strong>{i + 1}. </strong>{q.question}</div>
+                    <div>
+                        {q.options.map((option, index) => (
+                            <div key={index} className="form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name={"q" + i}
+                                    value={index + 1}
+                                    onChange={handleChange}
+                                />
+                                <label className="form-check-label">{option}</label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function ShowScore({ app }) {
+            return (
+                <div className="text-center p-2">
+                    <h4>คุณได้คะแนน {app.state.score}</h4>
+                    <button className="btn btn-primary" onClick={() => app.setState({ status: 0 })}>
+                        กลับไปหน้าเลือกวิชา
+                    </button>
+                </div>
+            );
+        }
+
+        const container = document.getElementById('myapp');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
