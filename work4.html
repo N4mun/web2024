@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.2/dist/aframe-extras.min.js"></script>
+</head>
+
+<body>
+    <a-scene>
+        <a-plane src="./img/Cobblestone_Background_high_resolution_preview_760833.jpg" rotation="-90 0 0" width="100" height="100"></a-plane>
+        <a-sky color="#ECECEC" src="./img/42503757700_5aa295ce76_o.jpg"></a-sky>
+        <a-light type="point" intensity="2" position="2 4 4" color="#E5D0AC"></a-light>
+        <a-image src="./img/profile.png" position="0 1.5 -3" width="2" height="2"></a-image>
+        <a-plane src="./img/canvas.jpg" position="-2 1.5 -3" rotation="0 30 0" width="3" height="2">
+            <a-text value="สวัสดีครับทุกท่านผมชื่อ\nณัฐภัทร ตรงวัฒนาวุฒิ\n653380197-7 กลุ่มเรียนที่ 2" align="center" color="black" width="3" font="torsilpRungrueang-msdf.json" font-image="torsilpRungrueang.png" negate="false" scale="1 1 1"></a-text> 
+        </a-plane>
+        <a-plane src="./img/canvas.jpg" position="2 1.5 -3" rotation="0 -30 0" width="3" height="2">
+            <a-text value="ปัจจุบันเป็นนักศึกษา\nสาขาวิทยาการคอมพิวเตอร์ชั้นปีที่3 วิทยาลัยการคอมพิวเตอร์\nมหาวิทยาลัยขอนแก่น" align="center" color="black" width="3" font="torsilpRungrueang-msdf.json" font-image="torsilpRungrueang.png" negate="false" scale="1 1 1"></a-text> 
+        </a-plane>
+        <a-entity gltf-model="Crown.glb" scale="0.5 0.5 0.5" position="0 2.5 -3" animation__rotation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"></a-entity>
+        <a-entity gltf-model="Dragon.glb" animation-mixer="clip:*; loop: infinite" scale="1.5 1.5 1.5" position="0 3 -4"></a-entity>
+</a-entity>
+    </a-scene>
+</body>
+
+</html>
